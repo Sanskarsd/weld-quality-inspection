@@ -12,6 +12,7 @@ class NewInspectionState {
     this.image,
     this.type = InspectionType.weldVisual,
     this.componentName = '',
+    this.jobBatchId = '',
     this.notes = '',
     this.result,
     this.errorMessage,
@@ -21,6 +22,7 @@ class NewInspectionState {
   final InspectionImage? image;
   final InspectionType type;
   final String componentName;
+  final String jobBatchId;
   final String notes;
   final InspectionResult? result;
   final String? errorMessage;
@@ -32,6 +34,7 @@ class NewInspectionState {
     InspectionImage? image,
     InspectionType? type,
     String? componentName,
+    String? jobBatchId,
     String? notes,
     InspectionResult? result,
     String? errorMessage,
@@ -44,6 +47,7 @@ class NewInspectionState {
       image: clearImage ? null : image ?? this.image,
       type: type ?? this.type,
       componentName: componentName ?? this.componentName,
+      jobBatchId: jobBatchId ?? this.jobBatchId,
       notes: notes ?? this.notes,
       result: clearResult ? null : result ?? this.result,
       errorMessage: clearError ? null : errorMessage ?? this.errorMessage,
@@ -109,6 +113,10 @@ class NewInspectionController extends Notifier<NewInspectionState> {
     state = state.copyWith(componentName: componentName, clearError: true);
   }
 
+  void updateJobBatchId(String jobBatchId) {
+    state = state.copyWith(jobBatchId: jobBatchId, clearError: true);
+  }
+
   void updateNotes(String notes) {
     state = state.copyWith(notes: notes, clearError: true);
   }
@@ -124,13 +132,22 @@ class NewInspectionController extends Notifier<NewInspectionState> {
       );
       return;
     }
+    if (state.componentName.trim().isEmpty) {
+      state = state.copyWith(
+        phase: InspectionPhase.error,
+        errorMessage: 'Enter a component name before running the inspection.',
+        clearResult: true,
+      );
+      return;
+    }
 
     final request = InspectionRequest(
       image: image,
       type: state.type,
-      componentName: state.componentName.trim().isEmpty
+      componentName: state.componentName.trim(),
+      jobBatchId: state.jobBatchId.trim().isEmpty
           ? null
-          : state.componentName.trim(),
+          : state.jobBatchId.trim(),
       notes: state.notes.trim().isEmpty ? null : state.notes.trim(),
     );
     state = state.copyWith(

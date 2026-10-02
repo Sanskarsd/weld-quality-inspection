@@ -4,9 +4,11 @@ import 'package:image_picker/image_picker.dart';
 import '../../data/repositories/demo_inspection_repository.dart';
 import '../../domain/models/inspection_request.dart';
 import '../../domain/repositories/inspection_repository.dart';
+import '../../../inspection_history/application/providers/inspection_history_providers.dart';
 
 final inspectionRepositoryProvider = Provider<InspectionRepository>(
-  (ref) => const DemoInspectionRepository(),
+  (ref) =>
+      DemoInspectionRepository(ref.read(demoInspectionHistoryStoreProvider)),
 );
 
 final inspectionImagePickerProvider = Provider<InspectionImagePicker>(

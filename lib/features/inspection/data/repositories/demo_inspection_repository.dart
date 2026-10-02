@@ -1,15 +1,18 @@
 import '../../domain/models/inspection_request.dart';
 import '../../domain/models/inspection_result.dart';
 import '../../domain/repositories/inspection_repository.dart';
+import '../../../inspection_history/data/repositories/demo_inspection_history_store.dart';
 
 /// Local demonstration implementation. A future REST implementation must only
 /// implement [InspectionRepository] and map its API response to [InspectionResult].
 class DemoInspectionRepository implements InspectionRepository {
-  const DemoInspectionRepository({
+  DemoInspectionRepository(
+    this._historyStore, {
     this.processingDelay = const Duration(milliseconds: 700),
   });
 
   final Duration processingDelay;
+  final DemoInspectionHistoryStore _historyStore;
 
   @override
   Future<InspectionResult> runInspection(InspectionRequest request) async {
@@ -20,7 +23,7 @@ class DemoInspectionRepository implements InspectionRepository {
         3;
     final completedAt = DateTime.now();
 
-    return switch (scenario) {
+    final result = switch (scenario) {
       0 => InspectionResult(
         inspectionId: 'DEMO-${completedAt.millisecondsSinceEpoch}',
         status: InspectionStatus.passed,
@@ -29,6 +32,11 @@ class DemoInspectionRepository implements InspectionRepository {
         processingTime: const Duration(milliseconds: 700),
         completedAt: completedAt,
         imageName: request.image.fileName,
+        image: request.image,
+        componentName: request.componentName,
+        jobBatchId: request.jobBatchId,
+        inspectionType: request.type,
+        inspectionNotes: request.notes,
         details: 'No significant visual indication was identified in this demonstration result.',
         dataSource: InspectionDataSource.demo,
       ),
@@ -43,6 +51,11 @@ class DemoInspectionRepository implements InspectionRepository {
         processingTime: const Duration(milliseconds: 700),
         completedAt: completedAt,
         imageName: request.image.fileName,
+        image: request.image,
+        componentName: request.componentName,
+        jobBatchId: request.jobBatchId,
+        inspectionType: request.type,
+        inspectionNotes: request.notes,
         details: 'Demonstration result indicates a visual feature requiring quality review.',
         dataSource: InspectionDataSource.demo,
       ),
@@ -57,9 +70,16 @@ class DemoInspectionRepository implements InspectionRepository {
         processingTime: const Duration(milliseconds: 700),
         completedAt: completedAt,
         imageName: request.image.fileName,
+        image: request.image,
+        componentName: request.componentName,
+        jobBatchId: request.jobBatchId,
+        inspectionType: request.type,
+        inspectionNotes: request.notes,
         details: 'Demonstration result requires inspector confirmation.',
         dataSource: InspectionDataSource.demo,
       ),
     };
+    _historyStore.add(result);
+    return result;
   }
 }

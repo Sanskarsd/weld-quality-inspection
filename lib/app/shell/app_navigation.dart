@@ -63,7 +63,7 @@ class _DesktopSidebar extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.fromLTRB(24, 20, 24, 28),
+                padding: const EdgeInsets.fromLTRB(24, 24, 24, 28),
                 child: Row(
                   children: <Widget>[
                     Icon(
@@ -73,7 +73,7 @@ class _DesktopSidebar extends StatelessWidget {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        'Weld Inspection\nSystem',
+                        'Weld Inspection\nQuality System',
                         style: theme.textTheme.titleMedium,
                       ),
                     ),
@@ -91,7 +91,11 @@ class _DesktopSidebar extends StatelessWidget {
                             leading: Icon(route.icon),
                             title: Text(route.label),
                             selected: selectedRoute == route,
-                            shape: const StadiumBorder(),
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                            ),
                             onTap: () => onDestinationSelected(route),
                           ),
                         ),

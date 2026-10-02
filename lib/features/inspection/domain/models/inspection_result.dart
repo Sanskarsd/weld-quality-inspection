@@ -1,3 +1,5 @@
+import 'inspection_request.dart';
+
 enum InspectionStatus { passed, failed, underReview }
 
 enum DefectSeverity { low, medium, high, critical }
@@ -31,6 +33,11 @@ class InspectionResult {
     required this.completedAt,
     required this.imageName,
     required this.dataSource,
+    this.image,
+    this.componentName,
+    this.jobBatchId,
+    this.inspectionType,
+    this.inspectionNotes,
     this.defectType,
     this.severity,
     this.defectLocation,
@@ -48,6 +55,11 @@ class InspectionResult {
   final DateTime completedAt;
   final String? details;
   final String imageName;
+  final InspectionImage? image;
+  final String? componentName;
+  final String? jobBatchId;
+  final InspectionType? inspectionType;
+  final String? inspectionNotes;
   final InspectionDataSource dataSource;
 
   String? get dataSourceNotice => switch (dataSource) {

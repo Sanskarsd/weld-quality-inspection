@@ -6,20 +6,24 @@ class InspectionMetadataForm extends StatelessWidget {
   const InspectionMetadataForm({
     required this.type,
     required this.componentName,
+    required this.jobBatchId,
     required this.notes,
     required this.isLoading,
     required this.onTypeChanged,
     required this.onComponentNameChanged,
+    required this.onJobBatchIdChanged,
     required this.onNotesChanged,
     super.key,
   });
 
   final InspectionType type;
   final String componentName;
+  final String jobBatchId;
   final String notes;
   final bool isLoading;
   final ValueChanged<InspectionType> onTypeChanged;
   final ValueChanged<String> onComponentNameChanged;
+  final ValueChanged<String> onJobBatchIdChanged;
   final ValueChanged<String> onNotesChanged;
 
   @override
@@ -59,7 +63,17 @@ class InspectionMetadataForm extends StatelessWidget {
               enabled: !isLoading,
               onChanged: onComponentNameChanged,
               decoration: const InputDecoration(
-                labelText: 'Component or job name (optional)',
+                labelText: 'Component name',
+                helperText: 'Required',
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              initialValue: jobBatchId,
+              enabled: !isLoading,
+              onChanged: onJobBatchIdChanged,
+              decoration: const InputDecoration(
+                labelText: 'Job / Batch ID (optional)',
               ),
             ),
             const SizedBox(height: 16),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../domain/models/inspection_request.dart';
 import '../../domain/models/inspection_result.dart';
 
 class InspectionResultCard extends StatelessWidget {
@@ -64,6 +65,44 @@ class InspectionResultCard extends StatelessWidget {
               ),
             ],
             const SizedBox(height: 16),
+            if (result.image != null) ...<Widget>[
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: Image.memory(result.image!.bytes, fit: BoxFit.cover),
+                ),
+              ),
+              const SizedBox(height: 16),
+            ] else ...<Widget>[
+              const ListTile(
+                leading: Icon(Icons.image_not_supported_outlined),
+                title: Text('Inspection image unavailable'),
+              ),
+              const SizedBox(height: 8),
+            ],
+            if (result.componentName != null) ...<Widget>[
+              Text(
+                'Inspection information',
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              const SizedBox(height: 8),
+              _ResultRow(
+                field: _ResultField('Component', result.componentName!),
+              ),
+              if (result.jobBatchId != null)
+                _ResultRow(
+                  field: _ResultField('Job / Batch', result.jobBatchId!),
+                ),
+              if (result.inspectionType != null)
+                _ResultRow(
+                  field: _ResultField(
+                    'Inspection type',
+                    result.inspectionType!.label,
+                  ),
+                ),
+              const Divider(height: 24),
+            ],
             ...fields.map(
               (field) => Padding(
                 padding: const EdgeInsets.only(bottom: 10),
@@ -78,6 +117,15 @@ class InspectionResultCard extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Text(details),
+            ],
+            if (result.inspectionNotes case final notes?) ...<Widget>[
+              const Divider(height: 24),
+              Text(
+                'Inspection notes',
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              const SizedBox(height: 6),
+              Text(notes),
             ],
           ],
         ),

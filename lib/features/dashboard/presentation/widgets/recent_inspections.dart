@@ -10,6 +10,18 @@ class RecentInspections extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (inspections.isEmpty) {
+      return const Card(
+        child: Padding(
+          padding: EdgeInsets.all(24),
+          child: ListTile(
+            leading: Icon(Icons.inbox_outlined),
+            title: Text('No inspections available'),
+            subtitle: Text('Completed inspections will appear here.'),
+          ),
+        ),
+      );
+    }
     return LayoutBuilder(
       builder: (context, constraints) {
         if (constraints.maxWidth < 680) {

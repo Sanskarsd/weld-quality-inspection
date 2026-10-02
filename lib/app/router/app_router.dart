@@ -1,7 +1,8 @@
 import 'package:go_router/go_router.dart';
 
 import '../../features/dashboard/presentation/dashboard_screen.dart';
-import '../../features/inspection_history/presentation/inspection_history_screen.dart';
+import '../../features/inspection_history/presentation/screens/inspection_history_detail_screen.dart';
+import '../../features/inspection_history/presentation/screens/inspection_history_screen.dart';
 import '../../features/inspection/presentation/screens/new_inspection_screen.dart';
 import '../../features/reports/presentation/reports_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
@@ -28,6 +29,12 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: AppRoute.inspectionHistory.path,
           builder: (context, state) => const InspectionHistoryScreen(),
+        ),
+        GoRoute(
+          path: '${AppRoute.inspectionHistory.path}/:inspectionId',
+          builder: (context, state) => InspectionHistoryDetailScreen(
+            inspectionId: state.pathParameters['inspectionId']!,
+          ),
         ),
         GoRoute(
           path: AppRoute.reports.path,

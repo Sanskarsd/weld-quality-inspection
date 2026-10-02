@@ -43,15 +43,7 @@ class DashboardData {
   final InspectionSummary summary;
   final List<RecentInspection> recentInspections;
 
-  /// Source-owned copy. A live repository returns null, removing demo-only
-  /// wording throughout the presentation without widget-specific conditions.
-  String? get dataSourceNotice => switch (dataSource) {
-    DashboardDataSource.demo => 'Demo data — backend not connected',
-    DashboardDataSource.live => null,
-  };
+  String? get dataSourceNotice => null;
 
-  String? get statusSummaryNote => switch (dataSource) {
-    DashboardDataSource.demo => 'Static demonstration status distribution',
-    DashboardDataSource.live => null,
-  };
+  String? get statusSummaryNote => null;
 }

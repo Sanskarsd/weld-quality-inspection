@@ -23,10 +23,12 @@ class NewInspectionScreen extends ConsumerWidget {
     final metadata = InspectionMetadataForm(
       type: state.type,
       componentName: state.componentName,
+      jobBatchId: state.jobBatchId,
       notes: state.notes,
       isLoading: state.isLoading,
       onTypeChanged: controller.updateType,
       onComponentNameChanged: controller.updateComponentName,
+      onJobBatchIdChanged: controller.updateJobBatchId,
       onNotesChanged: controller.updateNotes,
     );
 

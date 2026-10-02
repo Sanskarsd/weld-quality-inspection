@@ -6,6 +6,7 @@ class StatisticCard extends StatelessWidget {
     required this.value,
     required this.icon,
     required this.color,
+    this.valueLabel,
     this.dataSourceLabel,
     super.key,
   });
@@ -14,6 +15,7 @@ class StatisticCard extends StatelessWidget {
   final int value;
   final IconData icon;
   final Color color;
+  final String? valueLabel;
   final String? dataSourceLabel;
 
   @override
@@ -41,7 +43,10 @@ class StatisticCard extends StatelessWidget {
                 children: <Widget>[
                   Text(label, style: theme.textTheme.bodyMedium),
                   const SizedBox(height: 4),
-                  Text('$value', style: theme.textTheme.headlineSmall),
+                  Text(
+                    valueLabel ?? '$value',
+                    style: theme.textTheme.headlineSmall,
+                  ),
                   if (dataSourceLabel case final label?) ...<Widget>[
                     const SizedBox(height: 2),
                     Text(label, style: theme.textTheme.labelSmall),

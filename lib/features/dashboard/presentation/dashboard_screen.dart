@@ -18,6 +18,29 @@ class DashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dashboardData = ref.watch(dashboardDataProvider);
 
+    return dashboardData.when(
+      loading: () =>
+          const SafeArea(child: Center(child: CircularProgressIndicator())),
+      error: (_, _) => SafeArea(
+        child: Center(
+          child: FilledButton.icon(
+            onPressed: () => ref.invalidate(dashboardDataProvider),
+            icon: const Icon(Icons.refresh),
+            label: const Text('Retry dashboard'),
+          ),
+        ),
+      ),
+      data: (data) => _DashboardContent(dashboardData: data),
+    );
+  }
+}
+
+class _DashboardContent extends StatelessWidget {
+  const _DashboardContent({required this.dashboardData});
+  final DashboardData dashboardData;
+
+  @override
+  Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -50,14 +73,14 @@ class DashboardScreen extends ConsumerWidget {
                 LayoutBuilder(
                   builder: (context, constraints) {
                     final statusSummary = DashboardSection(
-                      title: 'Inspection status',
+                      title: 'Current inspection status',
                       child: InspectionStatusSummary(
                         summary: dashboardData.summary,
                         footerLabel: dashboardData.statusSummaryNote,
                       ),
                     );
                     final recentInspections = DashboardSection(
-                      title: 'Recent inspections',
+                      title: 'Latest inspection activity',
                       action: _DataSourceLabel(
                         label: dashboardData.dataSourceNotice,
                       ),
@@ -134,39 +157,35 @@ class _SummaryCards extends StatelessWidget {
   Widget build(BuildContext context) {
     final cards = <Widget>[
       StatisticCard(
-        label: 'Total inspections',
+        label: 'Current inspections',
         value: summary.total,
         icon: Icons.fact_check_outlined,
         color: Theme.of(context).colorScheme.primary,
         dataSourceLabel: dataSourceLabel,
       ),
       StatisticCard(
-        label: 'Inspections passed',
+        label: 'Pass rate',
         value: summary.passed,
-        icon: Icons.check_circle_outline,
+        valueLabel: summary.total == 0
+            ? '0%'
+            : '${(summary.passed / summary.total * 100).toStringAsFixed(1)}%',
+        icon: Icons.task_alt_outlined,
         color: Colors.green,
         dataSourceLabel: dataSourceLabel,
       ),
       StatisticCard(
-        label: 'Inspections failed',
-        value: summary.failed,
-        icon: Icons.error_outline,
+        label: 'Requires attention',
+        value: summary.failed + summary.underReview,
+        icon: Icons.priority_high_outlined,
         color: Theme.of(context).colorScheme.error,
-        dataSourceLabel: dataSourceLabel,
-      ),
-      StatisticCard(
-        label: 'Pending / under review',
-        value: summary.underReview,
-        icon: Icons.pending_actions_outlined,
-        color: Colors.orange.shade800,
         dataSourceLabel: dataSourceLabel,
       ),
     ];
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final columns = constraints.maxWidth >= 1180
-            ? 4
+        final columns = constraints.maxWidth >= 960
+            ? 3
             : constraints.maxWidth >= 760
             ? 2
             : 1;

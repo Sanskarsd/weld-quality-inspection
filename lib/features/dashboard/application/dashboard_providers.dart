@@ -2,14 +2,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/models/dashboard_data.dart';
 import '../data/repositories/dashboard_repository.dart';
+import '../../inspection_history/application/providers/inspection_history_providers.dart';
 
 /// Central repository selection point. Replace only this implementation with
 /// the future FastAPI-backed DashboardRepository; dashboard UI stays unchanged.
 final dashboardRepositoryProvider = Provider<DashboardRepository>(
-  (ref) => const DemoDashboardRepository(),
+  (ref) =>
+      DemoDashboardRepository(ref.read(demoInspectionHistoryStoreProvider)),
 );
 
-/// Presentation consumes this data state, never a concrete repository.
-final dashboardDataProvider = Provider<DashboardData>(
-  (ref) => ref.watch(dashboardRepositoryProvider).getDashboardData(),
-);
+/// Presentation consumes repository-provided state, never a concrete store.
+final dashboardDataProvider = StreamProvider<DashboardData>((ref) async* {
+  final repository = ref.watch(dashboardRepositoryProvider);
+  yield await repository.getDashboardData();
+  yield* repository.watchDashboardData();
+});

@@ -9,6 +9,7 @@ import 'package:weld_inspection_app/features/inspection/data/repositories/demo_i
 import 'package:weld_inspection_app/features/inspection/domain/models/inspection_request.dart';
 import 'package:weld_inspection_app/features/inspection/domain/models/inspection_result.dart';
 import 'package:weld_inspection_app/features/inspection/domain/repositories/inspection_repository.dart';
+import 'package:weld_inspection_app/features/inspection_history/data/repositories/demo_inspection_history_store.dart';
 
 void main() {
   InspectionImage image() => InspectionImage(
@@ -29,11 +30,16 @@ void main() {
 
   test('demo repository fulfils the inspection contract', () async {
     final InspectionRepository repository = DemoInspectionRepository(
+      DemoInspectionHistoryStore(),
       processingDelay: Duration.zero,
     );
 
     final inspectionResult = await repository.runInspection(
-      InspectionRequest(image: image(), type: InspectionType.weldVisual),
+      InspectionRequest(
+        image: image(),
+        type: InspectionType.weldVisual,
+        componentName: 'Pressure Vessel Shell',
+      ),
     );
 
     expect(inspectionResult.inspectionId, isNotEmpty);
@@ -54,6 +60,24 @@ void main() {
     expect(state.errorMessage, isNotNull);
   });
 
+  test('controller requires a component name before submission', () async {
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    final controller = container.read(newInspectionControllerProvider.notifier);
+    controller.updateImage(image());
+
+    await controller.runInspection();
+
+    expect(
+      container.read(newInspectionControllerProvider).phase,
+      InspectionPhase.error,
+    );
+    expect(
+      container.read(newInspectionControllerProvider).errorMessage,
+      contains('component name'),
+    );
+  });
+
   test('controller exposes loading then success state', () async {
     final completer = Completer<InspectionResult>();
     final container = ProviderContainer(
@@ -66,6 +90,7 @@ void main() {
     addTearDown(container.dispose);
     final controller = container.read(newInspectionControllerProvider.notifier);
     controller.updateImage(image());
+    controller.updateComponentName('Pressure Vessel Shell');
 
     final operation = controller.runInspection();
     expect(
@@ -84,7 +109,7 @@ void main() {
     'controller exposes an error state when repository operation fails',
     () async {
       final container = ProviderContainer(
-      overrides: [
+        overrides: [
           inspectionRepositoryProvider.overrideWithValue(
             const _FailingRepository(),
           ),
@@ -95,6 +120,7 @@ void main() {
         newInspectionControllerProvider.notifier,
       );
       controller.updateImage(image());
+      controller.updateComponentName('Pressure Vessel Shell');
 
       await controller.runInspection();
 

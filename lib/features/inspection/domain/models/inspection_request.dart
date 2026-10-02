@@ -20,12 +20,14 @@ class InspectionRequest {
   const InspectionRequest({
     required this.image,
     required this.type,
-    this.componentName,
+    required this.componentName,
+    this.jobBatchId,
     this.notes,
   });
 
   final InspectionImage image;
   final InspectionType type;
-  final String? componentName;
+  final String componentName;
+  final String? jobBatchId;
   final String? notes;
 }
