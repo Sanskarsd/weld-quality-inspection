@@ -1,0 +1,25 @@
+Sdk/
+sdk/
+
+# Flutter
+weld_inspection/.dart_tool/
+weld_inspection/build/
+weld_inspection/.flutter-plugins
+weld_inspection/.flutter-plugins-dependencies
+weld_inspection/.packages
+weld_inspection/.pub-cache/
+weld_inspection/coverage/
+
+# Python
+SCubes/__pycache__/
+SCubes/**/__pycache__/
+SCubes/.venv/
+SCubes/venv/
+SCubes/*.pyc
+
+# Runtime data
+SCubes/storage/images/
+
+weld_inspection_git_backup/
+
+weld_inspection_git_backup/
